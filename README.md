@@ -5,14 +5,17 @@ dealing with IRIS SHEAR products calculated by IRIS.
 
 The IRIS SHEAR algorithm is property of Vaisala Inc, details can be found in [the IRIS Product and Display manual](ftp://ftp.sigmet.com/outgoing/manuals/IRIS_Product_and_Display_Manuals.pdf).
 
+## Installation
+
+The package can be installed locally with `pip install ./`.
+
 
 ## Functions
 
-
 Module                       | Description
 -----------------------------| ------------------------------------------------
-[`utils.py`](utils.py)       | Utility functions.
-[`iris_shear/iris.pyx`](iris.pyx) | Cython functions for the IRIS SHEAR algorithms. Should be compiled with `python setup.py build_ext --inplace`, after which the functions can be accessed through `iris_tools` module.
+[`utils`](utils.py)       | Utility functions.
+[`iristools`](iris.pyx) | Cython functions for the IRIS SHEAR algorithms. Has functions for calculating radial azimuthal differences.
 
 
 The script [`create_pgm_from_IRIS_shear_prod.py`](create_pgm_from_IRIS_shear_prod.py) script can be used to create PGM images from original, raw IRIS SHEAR products.

@@ -43,6 +43,7 @@ def read_vvp(path, filepattern, date, altitude="lowest"):
     data = np.loadtxt(fn, skiprows=3)
 
     if isinstance(altitude, str):
+        print("str")
         if str == "lowest":
             ind = -1
         else:
@@ -52,6 +53,7 @@ def read_vvp(path, filepattern, date, altitude="lowest"):
         alts = data[:, 0]
         ind = np.abs(alts - altitude).argmin()
     else:
+        ind = -1
         logging.error(
             "VVP altitude option '%s' not implement!" % str(altitude))
 
