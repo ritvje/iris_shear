@@ -43,8 +43,7 @@ def read_vvp(path, filepattern, date, altitude="lowest"):
     data = np.loadtxt(fn, skiprows=3)
 
     if isinstance(altitude, str):
-        print("str")
-        if str == "lowest":
+        if altitude == "lowest":
             ind = -1
         else:
             logging.error(
@@ -222,3 +221,42 @@ def polar_to_cart(polar_data, theta_step, range_step, x, y,
 
     # The data is reshaped and returned
     return (cart_data.reshape(len(y), len(x)).T)
+
+
+def bin_distance(r, theta, sitealt, re, ke=(4. / 3.)):
+    """Calculates great circle distance from radar site to radar bin over \
+    spherical earth, taking the refractivity of the atmosphere into account.
+    .. math::
+        s = k_e r_e \\arctan\\left(
+        \\frac{r \\cos\\theta}{r \\cos\\theta + k_e r_e + h}\\right)
+    where :math:`h` would be the radar site altitude amsl.
+    
+    Copied under MIT license from functions in 
+    hhttps://github.com/wradlib/wradlib/blob/master/wradlib/georef/misc.py.
+    
+    Parameters
+    ----------
+    r : :class:`numpy:numpy.ndarray`
+        Array of ranges [m]
+    theta : scalar or :class:`numpy:numpy.ndarray` broadcastable to the shape
+        of r elevation angles in degrees with 0° at horizontal and +90°
+        pointing vertically upwards from the radar
+    sitealt : float
+        site altitude [m] amsl.
+    re : float
+        earth's radius [m]
+    ke : float
+        adjustment factor to account for the refractivity gradient that
+        affects radar beam propagation. In principle this is wavelength-
+        dependent. The default of 4/3 is a good approximation for most
+        weather radar wavelengths
+    Returns
+    -------
+    distance : :class:`numpy:numpy.ndarray`
+        Array of great circle arc distances [m]
+        
+    """
+    reff = ke * re
+    sr = reff + sitealt
+    theta = np.radians(theta)
+    return reff * np.arctan(r * np.cos(theta) / (r * np.sin(theta) + sr))
