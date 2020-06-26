@@ -18,7 +18,7 @@ Module                       | Description
 [`iristools`](iris.pyx) | Cython functions for the IRIS SHEAR algorithms. Has functions for calculating radial azimuthal differences.
 
 
-The script [`create_pgm_from_IRIS_shear_prod.py`](create_pgm_from_IRIS_shear_prod.py) script can be used to create PGM images from original, raw IRIS SHEAR products.
+The script [`create_pgm_from_IRIS_shear_prod.py`](scripts/create_pgm_from_IRIS_shear_prod.py) script can be used to create PGM images from original, raw IRIS SHEAR products.
 To do this, in addition to the IRIS products, header information is required.
 It can be obtained with the `productx` utility program on servers where IRIS is installed. To run it on some set of IRIS products and save the output into text files, use for example the following bash snippet:
 
