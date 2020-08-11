@@ -13,7 +13,7 @@ ext = Extension("iris.iristools",
 setup(
     name="iris",
     packages=['iris'],
-    version='1.0',
+    version='1.0.1',
     description='IRIS SHEAR tools',
     author='Jenna Ritvanen',
     author_email='jenna.ritvanen@fmi.fi',

@@ -94,10 +94,12 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
             if not pad_mask[i, j]:
                 for n in range(af):
                     nt = i + n + 1
-                    if ((nt < pad_n_az) and not pad_mask[nt, j]):
+                    it = i + (n + 1) // 2
+                    if ((nt < pad_n_az) and (it < n_az) and not pad_mask[nt, j]):
                         # Get the first value that is not masked and inside
                         # the filter limit
-                        it = i + (n + 1) // 2
+                        # Also the location where we put the result has to be
+                        # inside the image
                         res[it, j] = pad_data[i, j] - pad_data[nt, j]
                         break
     return res
