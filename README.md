@@ -43,10 +43,9 @@ At least the following works.
 ```bash
 # In main directory
 python setup.py build_ext --inplace
-cd doc
-pdoc3 --html -o ./ --force iris
-mv iris/* .
-rm -rf iris
+pdoc3 --html -o docs --force ./iris
+mv docs/iris/* docs/
+rm -rf docs/iris
 ```
 
 Author: [Jenna Ritvanen](mailto:jenna.ritvanen@fmi.fi)

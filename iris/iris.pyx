@@ -61,6 +61,23 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
                    padmode pad_mode=WRAP):
     """Calculate the azimuthal difference as required in the IRIS algorithm.
 
+    Example usage:
+
+    ```python
+    import numpy as np
+    from iris import iristools
+
+    data = np.random.randn(360, 500).astype(np.float64)
+    mask = (np.abs(data) > 0.7).astype(np.int)
+    # With continuous/wrap padding
+    az_diff_wrap = iristools.diff_azimuthal(data, mask, 3)
+
+    # With constant zero padding
+    az_diff_const = iristools.diff_azimuthal(data, mask, 3, iristools.padmode.CONSTANT)
+
+    assert np.any(az_diff_wrap != az_diff_const)
+    ```
+
     Parameters
     ----------
     data : numpy.array of type np.float64
@@ -70,9 +87,9 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
     az_filter_len : int
         The Azimuth Filter Length in bins.
     pad_mode : enum padmode
-        The method used for padding the data to handle edges. Default enum WRAP
-        works for data that is continuous along azimuth. CONSTANT pads with
-        empty values and works for non-continous data.
+        The method used for padding the data to handle edges of the image.
+        WRAP (default) works for data that is continuous along azimuth.
+        CONSTANT pads with empty values and works for non-continous data.
 
     Returns
     -------
