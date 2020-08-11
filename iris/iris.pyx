@@ -3,12 +3,16 @@ import numpy as np
 cimport numpy as cnp
 cimport cython
 
+cpdef enum padmode:
+    WRAP = 0
+    CONSTANT = 1
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def diff_radial(cnp.ndarray[cnp.float64_t, ndim=2] data,
                 cnp.ndarray[cnp.int_t, ndim=2] mask,
                 unsigned int range_filter_len):
-    """ Calculate the radial difference as required in the IRIS algorithm.
+    """Calculate the radial difference as required in the IRIS algorithm.
 
     Parameters
     ----------
@@ -53,8 +57,9 @@ def diff_radial(cnp.ndarray[cnp.float64_t, ndim=2] data,
 @cython.wraparound(False)
 def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
                    cnp.ndarray[cnp.int_t, ndim=2] mask,
-                   unsigned int az_filter_len):
-    """ Calculate the azimuthal difference as required in the IRIS algorithm.
+                   unsigned int az_filter_len,
+                   padmode pad_mode=WRAP):
+    """Calculate the azimuthal difference as required in the IRIS algorithm.
 
     Parameters
     ----------
@@ -64,6 +69,10 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
         The mask of the data.
     az_filter_len : int
         The Azimuth Filter Length in bins.
+    pad_mode : enum padmode
+        The method used for padding the data to handle edges. Default enum WRAP
+        works for data that is continuous along azimuth. CONSTANT pads with
+        empty values and works for non-continous data.
 
     Returns
     -------
@@ -75,7 +84,6 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
     cdef cnp.ndarray[cnp.float64_t, ndim=2] pad_data
     cdef cnp.ndarray[cnp.int_t, ndim=2] pad_mask
 
-
     cdef unsigned int i, j, n, it, nt
     cdef unsigned int n_az = data.shape[0]
     cdef unsigned int n_r = data.shape[1]
@@ -85,9 +93,14 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
 
     res = np.zeros((n_az, n_r), dtype=np.float64)
     # We have to pad the data along first axis so that there are no gaps
-    # (since data is continuous along azimuth angles)
-    pad_mask = np.vstack((mask, mask[0:aft, :]))
-    pad_data = np.pad(data, ((0, aft), (0,0)), 'wrap')
+    if pad_mode == WRAP:
+        # data is continuous along azimuth angles
+        pad_mask = np.vstack((mask, mask[0:aft, :]))
+        pad_data = np.pad(data, ((0, aft), (0,0)), 'wrap')
+    elif pad_mode == CONSTANT:
+        # data is not continuous, pad with zero
+        pad_mask = np.vstack((mask, np.zeros((aft, n_r), dtype=np.int)))
+        pad_data = np.pad(data, ((0, aft), (0,0)), 'constant', constant_values=0.0)
 
     for j in range(n_r):
         for i in range(n_az):

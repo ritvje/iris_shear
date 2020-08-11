@@ -230,10 +230,10 @@ def bin_distance(r, theta, sitealt, re, ke=(4. / 3.)):
         s = k_e r_e \\arctan\\left(
         \\frac{r \\cos\\theta}{r \\cos\\theta + k_e r_e + h}\\right)
     where :math:`h` would be the radar site altitude amsl.
-    
-    Copied under MIT license from functions in 
+
+    Copied under MIT license from functions in
     hhttps://github.com/wradlib/wradlib/blob/master/wradlib/georef/misc.py.
-    
+
     Parameters
     ----------
     r : :class:`numpy:numpy.ndarray`
@@ -254,7 +254,7 @@ def bin_distance(r, theta, sitealt, re, ke=(4. / 3.)):
     -------
     distance : :class:`numpy:numpy.ndarray`
         Array of great circle arc distances [m]
-        
+
     """
     reff = ke * re
     sr = reff + sitealt
