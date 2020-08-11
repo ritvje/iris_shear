@@ -33,5 +33,20 @@ done
 
 The expression in the for-loop should be changed so, that when used with `ls`, it gives the desired product list. Change also the `.SHED9*` inside the loop to match the filename extensions.
 
+## Generating documentation
+
+To generate documentation, use e.g. [`pdoc3`](https://pdoc3.github.io/pdoc/). Installation `pip install pdoc3`.
+
+Generating documentation is apparently a bit tricky due to the Cython module.
+At least the following works.
+
+```bash
+# In main directory
+python setup.py build_ext --inplace
+cd doc
+pdoc3 --html -o ./ --force iris
+mv iris/* .
+rm -rf iris
+```
 
 Author: [Jenna Ritvanen](mailto:jenna.ritvanen@fmi.fi)
