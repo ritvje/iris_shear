@@ -4,6 +4,7 @@ import gzip
 import logging
 import numpy as np
 from datetime import timedelta
+from scipy import ndimage
 from scipy.ndimage.filters import generic_filter
 from scipy.ndimage.interpolation import map_coordinates
 import matplotlib.pyplot as plt
@@ -188,8 +189,8 @@ def polar_to_cart(polar_data, theta_step, range_step, x, y,
     -------
     cart_data : numpy.ndarray
         The data reprojected onto new coordinates.
-    """
 
+    """
     # "x" and "y" are numpy arrays with the desired cartesian coordinates
     # we make a meshgrid with them
     X, Y = np.meshgrid(x, y)
@@ -260,3 +261,37 @@ def bin_distance(r, theta, sitealt, re, ke=(4. / 3.)):
     sr = reff + sitealt
     theta = np.radians(theta)
     return reff * np.arctan(r * np.cos(theta) / (r * np.sin(theta) + sr))
+
+
+def threshold_field(field, threshold, structure_element=None):
+    """Find areas in field where values exceed threshold.
+
+    NaN-values are ignored.
+
+    Parameters
+    ----------
+    field : :class:`numpy:numpy.ndarray`
+        The field.
+    threshold : float
+        Threshold value
+    structure_element : :class:`numpy:numpy.ndarray`
+        The structure element used in labelling the areas. If None,
+        the default in scipy.ndimage.label is used. See the
+        function reference for details.
+
+    Returns
+    -------
+    n_areas : int
+        Number of identified areas.
+    areas : :class:`numpy:numpy.ndarray`
+        An array with the same shape as `field`, with values indicating areas.
+        Zero values indicate pixels that don't belong to any area.
+
+    """
+    f = field.copy()
+
+    f[f < threshold] = 0
+    f[np.isnan(f)] = 0
+
+    areas, n_areas = ndimage.label(f, structure=structure_element)
+    return n_areas, areas

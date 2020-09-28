@@ -7,7 +7,14 @@ The IRIS SHEAR algorithm is property of Vaisala Inc, details can be found in [th
 
 ## Installation
 
-The package can be installed locally with `pip install ./`.
+Before installing, remove possible old versions:
+```bash
+cd demo # Can't remove in main directory
+pip uninstall iris
+cd ..
+```
+
+The package can then be installed locally with `pip install ./`.
 
 
 ## Functions
