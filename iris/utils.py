@@ -264,7 +264,7 @@ def bin_distance(r, theta, sitealt, re, ke=(4. / 3.)):
 
 
 def threshold_field(field, threshold, structure_element=None):
-    """Find areas in field where values exceed threshold.
+    """Find areas in field where absolute values exceed threshold.
 
     NaN-values are ignored.
 
@@ -273,7 +273,7 @@ def threshold_field(field, threshold, structure_element=None):
     field : :class:`numpy:numpy.ndarray`
         The field.
     threshold : float
-        Threshold value
+        Threshold value for absolute values
     structure_element : :class:`numpy:numpy.ndarray`
         The structure element used in labelling the areas. If None,
         the default in scipy.ndimage.label is used. See the
@@ -290,7 +290,7 @@ def threshold_field(field, threshold, structure_element=None):
     """
     f = field.copy()
 
-    f[f < threshold] = 0
+    f[np.abs(f) < threshold] = 0
     f[np.isnan(f)] = 0
 
     areas, n_areas = ndimage.label(f, structure=structure_element)
