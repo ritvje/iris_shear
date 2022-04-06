@@ -6,6 +6,7 @@ cimport cython
 cpdef enum padmode:
     WRAP = 0
     CONSTANT = 1
+    EDGE = 2
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -75,6 +76,9 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
     # With constant zero padding
     az_diff_const = iristools.diff_azimuthal(data, mask, 3, iristools.padmode.CONSTANT)
 
+    # With edge padding
+    az_diff_edge = iristools.diff_azimuthal(data, mask, 3, iristools.padmode.EDGE)
+
     assert np.any(az_diff_wrap != az_diff_const)
     ```
 
@@ -90,6 +94,7 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
         The method used for padding the data to handle edges of the image.
         WRAP (default) works for data that is continuous along azimuth.
         CONSTANT pads with empty values and works for non-continous data.
+        EDGE pads with edge values and works for non-continuous data.
 
     Returns
     -------
@@ -118,6 +123,10 @@ def diff_azimuthal(cnp.ndarray[cnp.float64_t, ndim=2] data,
         # data is not continuous, pad with zero
         pad_mask = np.vstack((mask, np.zeros((aft, n_r), dtype=np.int)))
         pad_data = np.pad(data, ((0, aft), (0,0)), 'constant', constant_values=0.0)
+    elif pad_mode == EDGE:
+        # data is not continuous, pad with zero
+        pad_mask = np.vstack((mask, np.zeros((aft, n_r), dtype=np.int)))
+        pad_data = np.pad(data, ((0, aft), (0,0)), 'edge')
 
     for j in range(n_r):
         for i in range(n_az):
